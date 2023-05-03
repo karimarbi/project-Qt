@@ -1,28 +1,42 @@
 #include "mainwindow.h"
-#include <QMessageBox>
 #include <QApplication>
-#include "connexion.h"
-#include <QtSql/QSqlDatabase>
+#include <QMessageBox>
+#include "connection.h"
+#include "login.h"
+#include "qdebug.h"
+#include "emailsender.h"
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    Connexion c;
-    bool test=c.createconnect();
-    MainWindow w;
-    if(test)
-    {w.show();
-        QMessageBox::information(nullptr, QObject::tr("database is open"),
-                    QObject::tr("Connexion successful.\n"
-                                "Click Cancel to exit."), QMessageBox::Cancel);
+    Login l;
+    EmailSender sender;
 
+    QObject::connect(&sender, &EmailSender::emailSent, []() {
+        qDebug() << "Email sent successfully";
+    });
+
+    QObject::connect(&sender, &EmailSender::emailFailed, [](QString error) {
+        qDebug() << "Failed to send email: " << error;
+    });
+
+    sender.sendEmail("rania.touihri@esprit.tn", "Test email", "Hello world!", "");
+
+
+
+    Connection c;
+     //MainWindow w;
+    bool test=c.createconnect();
+    // MainWindow w;
+    if(test)
+        // MainWindow w;
+    {
+        l.show();
+
+          qDebug()<<"database open";
 }
     else
-        QMessageBox::critical(nullptr, QObject::tr("database is not open"),
-                    QObject::tr("Connexion failed.\n"
-                                "Click Cancel to exit."), QMessageBox::Cancel);
-
-
+      qDebug()<<"database not open";
 
     return a.exec();
 }
-

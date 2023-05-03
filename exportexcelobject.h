@@ -54,3 +54,4 @@ private:
 
 };
 #endif // EXPORTEXCELOBJECT_H
+

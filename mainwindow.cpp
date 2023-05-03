@@ -1,8 +1,88 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QMessageBox>
+#include<QDebug>
+#include "benevole.h"
+#include <iostream>
+#include<QIntValidator>
+#include<QComboBox>
+#include <QMessageBox>
+#include <QDebug>
+#include <QIntValidator>
+#include <QTextLength>
+#include <QPainter>
+#include <QDesktopServices>
+#include <QDebug>
+#include <QtPrintSupport/QPrinter>
+#include<QMessageBox>
+#include <QtPrintSupport/QPrintDialog>
+#include <QFileDialog>
+#include <QPdfWriter>
+#include <QtPrintSupport/QPrinter>
+#include<QMessageBox>
+#include <QtPrintSupport/QPrintDialog>
+#include <QFileDialog>
+#include <QPdfWriter>
+#include <QIntValidator>
+#include <QMessageBox>
+#include <QSqlTableModel>
+#include <QDebug>
+#include <QSqlQueryModel>
+#include <QtCharts>
+#include <QChartView>
+#include <QLineSeries>
+#include "connection.h"
+#include <iostream>
+#include <iostream>
+#include <ostream>
+#include <QMessageBox>
+#include <QTextEdit>
+#include <QIntValidator>
+#include<QWidget>
+#include <QTextDocument>
+#include <QTextEdit>
+#include <fstream>
+#include <windows.h>
+#include <QTextStream>
+#include <QRadioButton>
+#include <QFileDialog>
+#include <QPixmap>
+#include <QPainter>
+#include <string>
+#include <QtSvg/QSvgRenderer>
+#include <QtSvg/QSvgGenerator>
+#include<QDirModel>
+#include <QtPrintSupport/QPrinter>
+#include <QtPrintSupport/QAbstractPrintDialog>
+#include<QDirModel>
+#include <QtPrintSupport/QPrintDialog>
+
+#include <QPainter>
+#include <QPrinter>
+#include <QFileDialog>
+#include <QPdfWriter>
+#include <QTextDocument>
+#include <QSqlRecord>
+
+#include <QPrinter>
+#include <QPrintDialog>
+#include <QTextDocument>
+#include <QPdfWriter>
+
+
+
+
+
+
+/////////////KARIM//////////////////
+
+
+
+
+
+#include <QMessageBox>
 #include <QApplication>
-#include "Maman.h"
+#include "maman.h"
 #include <QString>
 #include <QTableView>
 #include <QMessageBox>
@@ -34,20 +114,84 @@
 #include <QCompleter>
 #include <QKeyEvent>
 #include "exportexcelobject.h"
-#include "qrcodegen.hpp"
+#include <QtSerialPort/QSerialPort>
+#include <QCoreApplication>
+////////////////////////
+#include "widget.h"
+#include "donnateur.h"
+#include <iostream>
+#include<QIntValidator>
+#include<QComboBox>
+#include <QSqlRecord>
+#include<QChartView>
+#include "video.h"
+#include "dons.h"
+#include "QrCode.h"
+#include <QRegExpValidator>
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
 
+MainWindow::MainWindow(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    ui->affichage->setModel(Etmp.afficher());
-    ui->affichage_sup->setModel(Etmp.afficher());
+
+    ///ARD
+    int ret=a.connect_arduino(); // lancer la connexion à arduino
+
+    switch(ret){
+    case(0):qDebug()<< "arduino is available and connected to : "<< a.getarduino_port_name();
+        break;
+    case(1):qDebug() << "arduino is available but not connected to :" <<a.getarduino_port_name();
+       break;
+    case(-1):qDebug() << "arduino is not available";
+    }
+    QObject::connect(a.getserial(),SIGNAL(readyRead()),this,SLOT(update_label())); // permet de lancer
 
 
+    /// ARD
+    ui->le_tab->setModel(c.afficher());
+
+
+    QRegExpValidator *validator = new QRegExpValidator(QRegExp("\\d{1,5}"), this);
+    ui->le_id->setValidator(validator);
+    ui->le_nom->setValidator(new QRegExpValidator(QRegExp("[A-Z,a-z]*")));
+    ui->le_nom_2->setValidator(new QRegExpValidator(QRegExp("[A-Z,a-z]*")));
+    ui->le_prenom->setValidator(new QRegExpValidator(QRegExp("[A-Z,a-z]*")));
+    ui->le_prenom_2->setValidator(new QRegExpValidator(QRegExp("[A-Z,a-z]*")));
+
+
+
+    ui->le_adresse->setValidator(new QRegExpValidator(QRegExp("[A-Z,a-z]*")));
+    ui->le_adresse_2->setValidator(new QRegExpValidator(QRegExp("[A-Z,a-z]*")));
+
+    ui->le_tel_2->setValidator(new QRegExpValidator(QRegExp("[0-9]*")));
+    ui->le_tel->setValidator(new QRegExpValidator(QRegExp("[0-9]*")));
+
+
+
+
+    ui->comboBox->setModel(c.tester());
+    ui->comboBox_2->setModel(c.tester());
+
+
+
+    ui->le_id_ss->setValidator(new QIntValidator(0,999,this));
+    ui->le_nom_ss->setValidator(new QRegExpValidator(QRegExp("[A-Za-z]+"), this));
+    ui->le_quantit_ss->setValidator(new QIntValidator(0,9999,this));
+    ui->le_montant_ss->setValidator(new QIntValidator(0,9999,this));
+    ui->le_id_2_s_2->setValidator(new QIntValidator(0,999,this));
+    ui->le_nom_2_s_2->setValidator(new QRegExpValidator(QRegExp("[A-Za-z]+"), this));
+    ui->le_quantit_2_s_2->setValidator(new QIntValidator(0,9999,this));
+    ui->le_montant_2_s_2->setValidator(new QIntValidator(0,9999,this));
+    ui->le_id_supp_s_2->setValidator(new QIntValidator(0,999,this));
+    ui->le_tab_s_2->setModel(Dtmp.afficher());
 }
 
+void MainWindow::setCurrentIndex(int index)
+{
+    ui->menu->setCurrentIndex(index);
+}
 
 MainWindow::~MainWindow()
 {
@@ -55,20 +199,343 @@ MainWindow::~MainWindow()
 }
 
 
+
+void MainWindow::on_pushButton_2_clicked()
+{
+
+
+    int id=ui->le_id->text().toInt();
+    QString nom=ui->le_nom->text();
+    QString prenom=ui->le_prenom->text();
+    QString adresse=ui->le_adresse->currentText();
+    QString tel=ui->le_tel->text();
+
+
+    Benevole C(id,nom,prenom,tel,adresse);
+    bool test=C.ajouter();
+
+    if(test)
+    {
+        QMessageBox::information(nullptr, QObject::tr("OK"),
+                    QObject::tr("Ajout effectué.\n"
+                                "Click Cancel to exit."), QMessageBox::Cancel);
+    }
+    else
+    {
+        QMessageBox::critical(nullptr, QObject::tr(" not ok"),
+                    QObject::tr("Ajout non effectué.\n"
+                                "Click Cancel to exit."), QMessageBox::Cancel);
+    }
+ui->le_tab->setModel(c.afficher());
+ui->comboBox->setModel(c.tester());
+ ui->comboBox_2->setModel(c.tester());
+}
+
+
+void MainWindow::on_bouton_supp_clicked()
+{
+    Benevole c;
+    c.setid(ui->comboBox->currentText().toInt());
+    bool test=c.supprimer(c.getid());
+    QMessageBox msgBox;
+
+    if(test)
+    {
+        QMessageBox::information(nullptr, QObject::tr("OK"),
+                    QObject::tr("supp effectué.\n"
+                                "Click Cancel to exit."), QMessageBox::Cancel);
+        ui->le_tab->setModel(c.afficher());
+         ui->comboBox->setModel(c.tester());
+          ui->comboBox_2->setModel(c.tester());
+    }
+    else
+    {
+        QMessageBox::critical(nullptr, QObject::tr(" not ok"),
+                    QObject::tr("supp non effectué.\n"
+                                "Click Cancel to exit."), QMessageBox::Cancel);
+    }
+}
+
+
+void MainWindow::on_pushButton_clicked()
+{
+    int id=ui->le_id_2->text().toInt();
+    QString nom=ui->le_nom_2->text();
+    QString prenom=ui->le_prenom_2->text();
+    QString adresse=ui->le_adresse_2->currentText();
+    QString tel=ui->le_tel_2->text();
+
+
+    Benevole C(id,nom,prenom,tel,adresse);
+    bool test =c.modifier(id,nom,prenom,tel,adresse);
+    if(test)
+    {
+        QMessageBox::information(nullptr, QObject::tr("OK"),
+                    QObject::tr("UPDATE effectué.\n"
+                                "Click Cancel to exit."), QMessageBox::Cancel);
+    }
+    else
+    {
+        QMessageBox::critical(nullptr, QObject::tr(" not ok"),
+                    QObject::tr("UPDATE non effectué.\n"
+                                "Click Cancel to exit."), QMessageBox::Cancel);
+    }
+ui->le_tab->setModel(c.afficher());
+ui->comboBox->setModel(c.tester());
+ ui->comboBox_2->setModel(c.tester());
+    ui->le_tab->setModel(c.afficher());
+
+}
+
+void MainWindow::on_comboBox_2_currentIndexChanged(const QString &arg1)
+{
+    QString name=ui->comboBox_2->currentText();
+    QSqlQuery qry;
+    qry.prepare("select *from benevoles where id_benevole='"+name+"'");
+    if(qry.exec())
+    {
+        while(qry.next())
+        {
+         ui->le_id_2->setText(qry.value(0).toString());
+         ui->le_nom_2->setText(qry.value(1).toString());
+          ui->le_prenom_2->setText(qry.value(2).toString());
+         ui->le_tel_2->setText(qry.value(3).toString());
+         ui->le_adresse_2->setCurrentText(qry.value(4).toString());
+
+        }
+    }
+
+
+
+
+
+}
+
+void MainWindow::on_pdf_clicked()
+    {
+        QPdfWriter pdf("C:/Users/pc/Desktop/FM.pdf");
+
+                                 QPainter painter(&pdf);
+
+                                 int i = 4000;
+
+
+
+
+                                 painter.setFont(QFont("Arial", 15));
+                                 painter.drawRect(0,3000,6300,2600);
+                                 painter.setPen(Qt::black);
+                                 painter.drawText(250,1500,"LISTE DES BENEVOLES");
+
+
+
+                                 painter.drawRect(0,3000,9600,500);
+                                 painter.setPen(Qt::black);
+                                 painter.setFont(QFont("Arial", 10));
+                                 painter.drawText(100,3000,"ID BENEVOLE");
+                                 painter.drawText(1500,3000,"NOM");
+                                 painter.drawText(3000,3000,"PRENOM");
+                                 painter.drawText(4500,3000,"TEL");
+                                 painter.drawText(6000,3000,"ADRESSE");
+
+                                 QSqlQuery query;
+                                 query.prepare("select * from benevoles");
+                                 query.exec();
+                                 while (query.next())
+                                 {
+                                     painter.drawText(100,i,query.value(0).toString());
+                                     painter.drawText(1500,i,query.value(1).toString());
+                                     painter.drawText(3000,i,query.value(2).toString());
+                                     painter.drawText(4500,i,query.value(3).toString());
+                                     painter.drawText(6000,i,query.value(4).toString());
+                                     painter.drawText(7500,i,query.value(5).toString());
+
+
+                                     i = i +500;
+                                 }
+
+                                 int reponse = QMessageBox::question(this, "PDF généré", "Afficher le PDF ?", QMessageBox::Yes |  QMessageBox::No);
+                                 if (reponse == QMessageBox::Yes)
+                                 {
+                                     QDesktopServices::openUrl(QUrl::fromLocalFile("C:/Users/pc/Desktop/FM.pdf"));
+                                     painter.end();
+                                 }
+                                 if (reponse == QMessageBox::No)
+                                 {
+                                     painter.end();
+                                 }
+
+    }
+
+
+void MainWindow::on_rechercher_button_clicked()
+{
+
+
+        QString rech =ui->IDRECH->text();
+            ui->le_tab->setModel(c.rechercher(rech));
+    }
+
+
+void MainWindow::on_pushButton_trier_ingr_clicked()
+{
+        QSqlQueryModel *model=new QSqlQueryModel();
+        model->setHeaderData(0, Qt::Horizontal, QObject::tr("NOM"));
+        model->setHeaderData(1, Qt::Horizontal, QObject::tr("PRENOM"));
+
+        ui->le_tab->setModel(model);
+        QSqlQuery query;
+
+
+        if (ui->comboBox_3->currentText()=="NOM")
+        query.prepare("SELECT *  FROM Benevoles ORDER BY NOM ASC ") ;
+    else
+            if (ui->comboBox_3->currentText()=="PRENOM")
+            query.prepare("SELECT *  FROM Benevoles ORDER BY PRENOM ASC ") ;
+
+        if (query.exec()&&query.next()) {
+            model->setQuery(query);
+
+            ui->le_tab->setModel(model);
+    }
+    }
+
+
+void MainWindow::on_statsmed_clicked()
+{
+    QSqlQueryModel * model= new QSqlQueryModel();
+
+     model->setQuery("select * from Benevoles where adresse='Tunis' ");
+     int number1=model->rowCount();
+     model->setQuery("select * from Benevoles where adresse='Nabeul' ");
+     int number2=model->rowCount();
+     model->setQuery("select * from Benevoles where adresse='Sfax' ");
+     int number3=model->rowCount();
+     model->setQuery("select * from Benevoles where adresse='Ariana' ");
+     int number4=model->rowCount();
+     model->setQuery("select * from Benevoles where adresse='Autre' ");
+     int number5=model->rowCount();
+
+
+     int total=number1+number2+number3+number4+number5;
+
+     QString a = QString("Tunis"+QString::number((number1*100)/total,'f',2)+"%" );
+     QString b = QString("Nabeul"+QString::number((number2*100)/total,'f',2)+"%" );
+     QString c = QString("Sfax"+QString::number((number3*100)/total,'f',2)+"%" );
+     QString d = QString("Ariana"+QString::number((number4*100)/total,'f',2)+"%" );
+     QString e = QString("Autre"+QString::number((number5*100)/total,'f',2)+"%" );
+
+
+
+
+
+     QPieSeries *series = new QPieSeries();
+
+
+     series->append(a,number1);
+     series->append(b,number2);
+     series->append(c,number3);
+     series->append(d,number4);
+     series->append(e,number5);
+
+
+     if (number1!= 0)
+     {
+         QPieSlice *slice = series->slices().at(0);
+         slice->setLabelVisible();
+         slice->setPen(QPen());
+     }
+     if (number2!=0)
+     {
+              // Add label, explode and define brush for 2nd slice
+              QPieSlice *slice = series->slices().at(1);
+              //slice1->setExploded();
+              slice->setLabelVisible();
+     }
+
+     if (number3!= 0)
+     {
+         QPieSlice *slice = series->slices().at(2);
+         slice->setLabelVisible();
+         slice->setPen(QPen());
+     }
+     if (number4!=0)
+     {
+              // Add label, explode and define brush for 2nd slice
+              QPieSlice *slice = series->slices().at(3);
+              //slice1->setExploded();
+              slice->setLabelVisible();
+     }
+     if (number1!= 5)
+     {
+         QPieSlice *slice = series->slices().at(4);
+         slice->setLabelVisible();
+         slice->setPen(QPen());
+     }
+
+
+             // Create the chart widget
+             QChart *chart = new QChart();
+
+             // Add data to chart with title and hide legend
+             chart->addSeries(series);
+
+
+             chart->setTitle("Pourcentage par adresse:"+ QString::number(total));
+             chart->legend()->hide();
+             // Used to display the chart
+             QChartView *chartView = new QChartView(chart);
+             chartView->setRenderHint(QPainter::Antialiasing);
+             chartView->resize(1000,500);
+             chartView->show();
+
+}
+
+void MainWindow::on_retour_client_ajout_clicked(){ui->menu->setCurrentIndex(0);}
+void MainWindow::on_retour_client_affiche_clicked(){ui->menu->setCurrentIndex(0);}
+void MainWindow::on_retour_client_supp_clicked(){ui->menu->setCurrentIndex(0);}
+void MainWindow::on_retour_client_modif_clicked(){ui->menu->setCurrentIndex(0);}
+void MainWindow::on_ajout_client_clicked(){ui->menu->setCurrentIndex(1);}
+void MainWindow::on_modif_client_clicked(){ui->menu->setCurrentIndex(4);}
+void MainWindow::on_rech_client_clicked(){ui->menu->setCurrentIndex(2);}
+void MainWindow::on_supp_client_clicked(){ui->menu->setCurrentIndex(3);}
+void MainWindow::on_retour_client_clicked(){ close();}
+
+
+
+
+////////////////////////////KARIM////////////////////////////
+//menu maman
+void MainWindow::on_retour_maman_clicked(){ close();}
+void MainWindow::on_ajout_maman_clicked(){ui->menu->setCurrentIndex(6);}
+void MainWindow::on_supp_maman_clicked(){ui->menu->setCurrentIndex(7);}
+void MainWindow::on_rech_maman_clicked(){ui->menu->setCurrentIndex(8);}
+void MainWindow::on_modif_maman_clicked(){ui->menu->setCurrentIndex(9);}
+//fin menu maman
+//retours
+void MainWindow::on_retour_maman_ajout_clicked(){ui->menu->setCurrentIndex(5);}
+void MainWindow::on_retour_maman_affiche_clicked(){ui->menu->setCurrentIndex(5);}
+void MainWindow::on_retour_maman_supp_clicked(){ui->menu->setCurrentIndex(5);}
+void MainWindow::on_retour_maman_modif_clicked(){ui->menu->setCurrentIndex(5);}
+
+
+
+
 void MainWindow::on_pb_ajouter_2_clicked()
 {
 
-    QString nom=ui->nom->text();
-    QString prenom=ui->prenom->text();
+    QString nom=ui->nom_k->text();
+    QString prenom=ui->prenom_k->text();
        int IDD=ui->IDD->text().toInt();
-       int age=ui->age->text().toInt();
-        int enfant=ui->enfant->text().toInt();
-        QString tel=ui->tel->text();
+       int age=ui->age_k->text().toInt();
+        int enfant=ui->enfant_k->text().toInt();
+        QString tel=ui->tel_k->text();
 
         if(nom == ""){
             QMessageBox::warning(nullptr, QObject::tr("erreur"),
                                                 QObject::tr("Verifier le nom.\n"
                                                             "Click Cancel to exit."), QMessageBox::Cancel);
+
         } else if(prenom == ""){
             QMessageBox::warning(nullptr, QObject::tr("erreur"),
                                                 QObject::tr("Verifier le prenom.\n"
@@ -77,11 +544,11 @@ void MainWindow::on_pb_ajouter_2_clicked()
             QMessageBox::warning(nullptr, QObject::tr("erreur"),
                                                 QObject::tr("Verifier l'ID.\n"
                                                             "Click Cancel to exit."), QMessageBox::Cancel);
-        } else if(ui->age->text() == ""){
+        } else if(ui->age_k->text() == ""){
             QMessageBox::warning(nullptr, QObject::tr("erreur"),
                                                 QObject::tr("Verifier l'age.\n"
                                                             "Click Cancel to exit."), QMessageBox::Cancel);
-        }  else if(ui->enfant->text() == ""){
+        }  else if(ui->enfant_k->text() == ""){
             QMessageBox::warning(nullptr, QObject::tr("erreur"),
                                                 QObject::tr("Verifier les enfants.\n"
                                                             "Click Cancel to exit."), QMessageBox::Cancel);
@@ -94,14 +561,19 @@ void MainWindow::on_pb_ajouter_2_clicked()
 
              {
                      bool test=d.ajouter();
-                ui->affichage->setModel(d.afficher());
+                ui->affichage_k->setModel(d.afficher());
                 ui->affichage_sup->setModel(d.afficher());
                      if(test)
                      {  QMessageBox::information(nullptr, QObject::tr("Ajouter un compte"),
                                                  QObject::tr("compte ajoute\n"
                                                              "Cliquez sur cancel Pour Quitter."), QMessageBox::Cancel);
-                     ui->statusbar->showMessage("compte ajouté");
-                     d.notifications_ajouter();}
+                     ui->statusBar->showMessage("compte ajouté");
+                     d.notifications_ajouter();
+                     a.write_to_arduino("2");
+                     qDebug()<<"done ajout";
+
+
+                     }
                      else
                      {  QMessageBox::warning(nullptr, QObject::tr("erreur"),
                                              QObject::tr("Echec de l'ajout.\n"
@@ -116,15 +588,15 @@ void MainWindow::on_pb_ajouter_2_clicked()
 
 void MainWindow::on_pb_stat_2_clicked()
 {
-    QString nom=ui->nom_2->text();
-    QString prenom=ui->prenom_2->text();
+    QString nom=ui->nom_k_2->text();
+    QString prenom=ui->prenom_k_2->text();
     int IDD=ui->IDD_2->text().toInt();
-    int age=ui->age_2->text().toInt();
-    int enfant=ui->enfant_2->text().toInt();
-    QString tel=ui->tel_2->text();
+    int age=ui->age_k_2->text().toInt();
+    int enfant=ui->enfant_k_2->text().toInt();
+    QString tel=ui->tel_k_2->text();
        IDD=ui->IDD_2->text().toInt();
-       enfant=ui->enfant_2->text().toInt();
-       age=ui->age_2->text().toInt();
+       enfant=ui->enfant_k_2->text().toInt();
+       age=ui->age_k_2->text().toInt();
 
 
     Maman e (nom,prenom,IDD,age,enfant,tel);
@@ -199,15 +671,15 @@ void MainWindow::on_pb_stat_2_clicked()
 
 void MainWindow::on_pb_modifier_2_clicked()
 {
-    QString nom=ui->nom_2->text();
-    QString prenom=ui->prenom_2->text();
+    QString nom=ui->nom_k_2->text();
+    QString prenom=ui->prenom_k_2->text();
     int IDD=ui->IDD_2->text().toInt();
-    int age=ui->age_2->text().toInt();
-    int enfant=ui->enfant_2->text().toInt();
-    QString tel=ui->tel_2->text();
+    int age=ui->age_k_2->text().toInt();
+    int enfant=ui->enfant_k_2->text().toInt();
+    QString tel=ui->tel_k_2->text();
        IDD=ui->IDD_2->text().toInt();
-       enfant=ui->enfant_2->text().toInt();
-       age=ui->age_2->text().toInt();
+       enfant=ui->enfant_k_2->text().toInt();
+       age=ui->age_k_2->text().toInt();
 //controle de saisie
        if(nom == ""){
            QMessageBox::warning(nullptr, QObject::tr("erreur"),
@@ -221,11 +693,11 @@ void MainWindow::on_pb_modifier_2_clicked()
            QMessageBox::warning(nullptr, QObject::tr("erreur"),
                                                QObject::tr("Verifier l'ID.\n"
                                                            "Click Cancel to exit."), QMessageBox::Cancel);
-       } else if(ui->age_2->text() == ""){
+       } else if(ui->age_k_2->text() == ""){
            QMessageBox::warning(nullptr, QObject::tr("erreur"),
                                                QObject::tr("Verifier l'age.\n"
                                                            "Click Cancel to exit."), QMessageBox::Cancel);
-       }  else if(ui->enfant_2->text() == ""){
+       }  else if(ui->enfant_k_2->text() == ""){
            QMessageBox::warning(nullptr, QObject::tr("erreur"),
                                                QObject::tr("Verifier les enfants.\n"
                                                            "Click Cancel to exit."), QMessageBox::Cancel);
@@ -242,17 +714,19 @@ void MainWindow::on_pb_modifier_2_clicked()
                 bool test=d.modifier(IDD);
                 if(test){
 
-                    ui->affichage->setModel(d.afficher());
+                    ui->affichage_k->setModel(d.afficher());
                     QMessageBox::information(nullptr, QObject::tr("modifier "),
                                QObject::tr("Modification effectuée.\n"
                                                "Click Cancel to exit."), QMessageBox::Cancel);
-                    ui->statusbar->showMessage("compte modifié");
+                    ui->statusBar->showMessage("compte modifié");
                     d.notifications_modifier();
+                    a.write_to_arduino("3");
+                    qDebug()<<"done modification";
                  } else {
                     QMessageBox::critical(nullptr, QObject::tr("modifier "),
                                    QObject::tr("Echec de la modification  \n"
                                                "Click Cancel to exit."), QMessageBox::Cancel);
-                    ui->statusbar->showMessage("compte non modifié");
+                    ui->statusBar->showMessage("compte non modifié");
                 }
             }
        }
@@ -272,14 +746,17 @@ void MainWindow::on_pb_supprimer_2_clicked()
     bool test=d.supprimer(IDD);
 
       ui->affichage_sup->setModel(d.afficher());
-      ui->affichage->setModel(d.afficher());
+      ui->affichage_k->setModel(d.afficher());
+
     if(test)
     {
 
         QMessageBox::information(nullptr,QObject::tr("ok"),QObject ::tr("suppression effectuée\n"
                                                                         "Click Cancel to exit"),QMessageBox::Cancel);
-    ui->statusbar->showMessage("suppression effectuée");
-    d.notifications_supprimer();}
+    ui->statusBar->showMessage("suppression effectuée");
+    d.notifications_supprimer();
+    a.write_to_arduino("4");
+    qDebug()<<"done supp";}
     else
     {
         QMessageBox::critical(nullptr,QObject::tr("not ok"),QObject ::tr("suppression non effectue\n"
@@ -294,32 +771,39 @@ void MainWindow::on_pb_supprimer_2_clicked()
 void MainWindow::on_pb_rechercher_clicked()
 {
    Maman d ;
+       if(ui->id_supp->text().length() >0 ) {
+           int IDD=ui->id_supp->text().toInt();
 
-       int IDD=ui->id_supp->text().toInt();
 
+                bool test=d.chercher(IDD);
 
-            bool test=d.chercher(IDD);
+                if(test)
+                {
+                    QMessageBox::information(nullptr, QObject::tr("Recherche"),
+                                            QObject::tr("compte a chercher existe\n"
+                                                        "Cliquez sur cancel Pour Quitter."), QMessageBox::Cancel);
+                ui->statusBar->showMessage("recherche terminée");
+                d.notifications_trouver();}
+                else
+                {  QMessageBox::warning(nullptr, QObject::tr("erreur"),
+                                        QObject::tr("Echec de la recherche.\n"
+                                                    "Click Cancel to exit."), QMessageBox::Cancel);}
 
-            if(test)
-            {
-                QMessageBox::information(nullptr, QObject::tr("Recherche"),
-                                        QObject::tr("compte a chercher existe\n"
-                                                    "Cliquez sur cancel Pour Quitter."), QMessageBox::Cancel);
-            ui->statusbar->showMessage("recherche terminée");
-            d.notifications_trouver();}
-            else
-            {  QMessageBox::warning(nullptr, QObject::tr("erreur"),
-                                    QObject::tr("Echec de la recherche.\n"
-                                                "Click Cancel to exit."), QMessageBox::Cancel);}
+       } else {
+           QMessageBox::warning(nullptr, QObject::tr("erreur"),
+                                                   QObject::tr("Echec de la recherche.\n"
+                                                               "Click Cancel to exit."), QMessageBox::Cancel);
+}
 
     }
 
 void MainWindow::on_pb_trier_clicked()
 {
     Maman F;
-    ui->affichage->setModel(F.trie());
+
+    ui->affichage_k->setModel(F.trie());
      ui->affichage_sup->setModel(F.trie());
-    ui->affichage->setModel(F.afficher());
+    ui->affichage_k->setModel(F.afficher());
       ui->affichage_sup->setModel(F.afficher());
     bool test=F.trie();
     QMessageBox msgBox ;
@@ -329,8 +813,8 @@ void MainWindow::on_pb_trier_clicked()
         QMessageBox::information(nullptr, QObject::tr("tri"),
                                 QObject::tr("comptes triés \n"
                                             "Cliquez sur cancel Pour Quitter."), QMessageBox::Cancel);
-     ui->affichage->setModel(F.trie());
-       ui->statusbar->showMessage("comptes triés");
+     ui->affichage_k->setModel(F.trie());
+       ui->statusBar->showMessage("comptes triés");
          F.notifications_donetri();
     }
     else
@@ -359,7 +843,7 @@ void MainWindow::on_pb_excel_clicked()
                     if (fileName.isEmpty())
                         return;
 
-                    ExportExcelObject obj(fileName, "mydata", ui->affichage);
+                    ExportExcelObject obj(fileName, "mydata", ui->affichage_k);
 
                     obj.addField(0, "nom", "char(20)");
                     obj.addField(1, "prenom", "char(20)");
@@ -414,10 +898,10 @@ QString fileName = QFileDialog::getOpenFileName((QWidget* )0, "ouvrir en PDF", Q
 //////////QRCODE
 
 
-void MainWindow::on_affichage_clicked(const QModelIndex &index)
+void MainWindow::on_affichage_k_clicked(const QModelIndex &index)
 {
-    int tabeq=ui->affichage->currentIndex().row();
-      QVariant idd=ui->affichage->model()->data(ui->affichage->model()->index(tabeq,0));
+    int tabeq=ui->affichage_k->currentIndex().row();
+      QVariant idd=ui->affichage_k->model()->data(ui->affichage_k->model()->index(tabeq,0));
       QString idf=idd.toString();
      // QString code=idd.toSTring();
       QSqlQuery qry;
@@ -438,30 +922,456 @@ void MainWindow::on_affichage_clicked(const QModelIndex &index)
           enfant=qry.value(4).toInt();
           tel=qry.value(5).toString();
 
-
-
-
-
       }
-      idf=QString(idf);
-     //QString text = idf ;
-             idf="IDD:\t" +idf+ " Nom\t:" +nom+ " Prenom:\t" +prenom+ + " age:\t" +age+ " enfant:\t" +enfant+ " tel:\t" +tel;
-      qrcodegen::QrCode qr = qrcodegen::QrCode::encodeText(idf.toUtf8().constData(), qrcodegen::QrCode::Ecc::HIGH);
+}
 
-      // Read the black & white pixels
-      QImage im(qr.getSize(),qr.getSize(), QImage::Format_RGB888);
-      for (int y = 0; y < qr.getSize(); y++) {
-          for (int x = 0; x < qr.getSize(); x++) {
-              int color = qr.getModule(x, y);  // 0 for white, 1 for black
 
-              // You need to modify this part
-              if(color==0)
-                  im.setPixel(x, y,qRgb(254, 254, 254));
-              else
-                  im.setPixel(x, y,qRgb(0, 0, 0));
-          }
-      }
-      im=im.scaled(200,200);
-                ui->QrCode->setPixmap(QPixmap::fromImage(im));
+void MainWindow::on_pb_arduino_clicked()
+{
+   Maman d ;
+       if(ui->id_supp->text().length() >0 ) {
+           int IDD=ui->id_supp->text().toInt();
+
+
+                bool test=d.chercher(IDD);
+
+                if(test)
+                {
+                    QMessageBox::information(nullptr, QObject::tr("Arduino"),
+                                            QObject::tr("veuillez consulter l'ecran\n"
+                                                        "Cliquez sur cancel Pour Quitter."), QMessageBox::Cancel);
+                ui->statusBar->showMessage("affichage arduino avec succées");
+                d.notifications_arduino();
+                d= d.find_arduino(IDD);
+                a.write_to_arduino("1");
+                qDebug()<<"done";
+                a.write_to_arduino(d.getnom().toUtf8()+",");
+                a.write_to_arduino(d.getprenom().toUtf8()+",");
+                a.write_to_arduino(d.gettel().toUtf8()+",");
+                a.write_to_arduino(QString::number(d.getage()).toUtf8()+",");
+                a.write_to_arduino(QString::number(d.getenfant()).toUtf8());
+                }
+                else
+                {  QMessageBox::warning(nullptr, QObject::tr("erreur"),
+                                        QObject::tr("Echec de l'affichage arduino.\n"
+                                                    "Click Cancel to exit."), QMessageBox::Cancel);}
+
+
+       } else {
+           QMessageBox::warning(nullptr, QObject::tr("erreur"),
+                                                   QObject::tr("Echec de l'affichage arduino.\n"
+                                                               "Click Cancel to exit."), QMessageBox::Cancel);
+}
+
+    }
+
+//////////////ROUA//////////////
+void MainWindow::on_ajouter_r_clicked()
+{
+
+
+
+
+
+    int id=ui->le_id_r->text().toInt();
+    QString nom=ui->le_nom_r->text();
+    QString prenom=ui->le_prenom_r->text();
+    QString e_mail=ui->le_email_r->text();
+    QString tel=ui->le_tel_r->text();
+
+
+    Donnateur d(id,nom,prenom,e_mail,tel);
+    bool test=d.ajouter();
+
+    if(test)
+    {
+        QMessageBox::information(nullptr, QObject::tr("OK"),
+                    QObject::tr("Ajout effectué.\n"
+                                "Click Cancel to exit."), QMessageBox::Cancel);
+    }
+    else
+    {
+        QMessageBox::critical(nullptr, QObject::tr(" not ok"),
+                    QObject::tr("Ajout non effectué.\n"
+                                "Click Cancel to exit."), QMessageBox::Cancel);
+    }
+ui->le_tab_r->setModel(d.afficher());
+ui->comboBox_r->setModel(d.tester());
+ ui->comboBox_r_2->setModel(d.tester());
+}
+
+
+void MainWindow::on_retour_donnateur_clicked(){ close();}
+void MainWindow::on_ajout_donnateur_clicked(){ui->menu->setCurrentIndex(11);}
+void MainWindow::on_supp_donnateur_clicked(){ui->menu->setCurrentIndex(12);}
+void MainWindow::on_rech_donnateur_clicked(){ui->menu->setCurrentIndex(13);}
+void MainWindow::on_modif_donnateur_clicked(){ui->menu->setCurrentIndex(14);}
+void MainWindow::on_mailing_donnateur_clicked(){ui->menu->setCurrentIndex(15);}
+
+//retours
+void MainWindow::on_retour_donnateur_ajout_clicked(){ui->menu->setCurrentIndex(10);}
+void MainWindow::on_retour_donnateur_affiche_clicked(){ui->menu->setCurrentIndex(10);}
+void MainWindow::on_retour_donnateur_supp_clicked(){ui->menu->setCurrentIndex(10);}
+void MainWindow::on_retour_donnateur_modif_clicked(){ui->menu->setCurrentIndex(10);}
+void MainWindow::on_retour_donnateur_mailing_clicked(){ui->menu->setCurrentIndex(10);}
+
+void MainWindow::on_supp_r_2_clicked()
+{
+    Donnateur d;
+    d.setid(ui->comboBox_r->currentText().toInt());
+    bool test=d.supprimer(d.getid());
+    QMessageBox msgBox;
+
+    if(test)
+    {
+        QMessageBox::information(nullptr, QObject::tr("OK"),
+                    QObject::tr("supp effectué.\n"
+                                "Click Cancel to exit."), QMessageBox::Cancel);
+        ui->le_tab_r->setModel(d.afficher());
+        ui->comboBox_r->setModel(d.tester());
+         ui->comboBox_r_2->setModel(d.tester());
+    }
+    else
+    {
+        QMessageBox::critical(nullptr, QObject::tr(" not ok"),
+                    QObject::tr("supp non effectué.\n"
+                                "Click Cancel to exit."), QMessageBox::Cancel);
+    }
+}
+
+
+void MainWindow::on_modif_r_2_clicked()//boutton modification
+{
+    int id;
+    QString nom,prenom,e_mail,tel;
+
+    id=ui->le_id_6->text().toInt();
+    nom=ui->le_nom_6->text();
+    prenom=ui->le_prenom_6->text();
+    e_mail=ui->le_email_6->text();
+     tel=ui->le_tel_6->text();
+    D.modifier(id,nom,prenom,e_mail,tel);
+
+    QMessageBox::information(nullptr, QObject::tr("OK"),
+                QObject::tr("modification effectué.\n"
+                            "Click Cancel to exit."), QMessageBox::Cancel);
+    ui->le_tab_r->setModel(D.afficher());
+    ui->comboBox_r->setModel(D.tester());
+     ui->comboBox_r_2->setModel(D.tester());
 
 }
+
+
+void MainWindow::on_comboBox_r_2_currentIndexChanged(const QString &arg1)//combo modification
+{
+    QString name=ui->comboBox_r_2->currentText();
+    QSqlQuery qry;
+    qry.prepare("select *from donnateur where id='"+name+"'");
+    if(qry.exec())
+    {
+        while(qry.next())
+        {
+         ui->le_id_6->setText(qry.value(0).toString());
+         ui->le_nom_6->setText(qry.value(1).toString());
+          ui->le_prenom_6->setText(qry.value(2).toString());
+          ui->le_email_6->setText(qry.value(3).toString());
+         ui->le_tel_6->setText(qry.value(4).toString());
+        }
+    }
+
+
+
+
+
+}
+
+void MainWindow::on_pb_meilleur_r_clicked()
+{
+    QSqlQueryModel *model = D.findbyid(ui->rechercher_r->text());
+
+        if (model->rowCount() > 0) {
+            // Get the record of the first row
+              QSqlRecord record = model->record(0);
+              ui->le_id_6->setText(record.value(0).toString());
+              ui->le_nom_6->setText(record.value(1).toString());
+              ui->le_prenom_6->setText(record.value(2).toString());
+              ui->le_email_6->setText(record.value(3).toString());
+              ui->le_tel_6->setText(record.value(4).toString());
+
+
+        }
+            else
+            {
+
+               QMessageBox::critical(nullptr, QObject::tr("Erreur"),
+                            QObject::tr("id n'existe pas !\n"
+                                        "Click Cancel to exit."), QMessageBox::Cancel);
+
+            }
+}
+
+void MainWindow::on_radioButton_a_2_clicked()
+{
+
+
+
+  if(ui->comboBox_trie_2->currentText() != "Choisir")
+ui->le_tab_r->setModel(D.trie("ASC",ui->comboBox_trie_2->currentText()));
+else      ui->le_tab_r->setModel(c.afficher());
+
+}
+
+void MainWindow::on_radioButton_d_2_clicked()
+{  if(ui->comboBox_trie_2->currentText() != "Choisir")
+        ui->le_tab_r->setModel(D.trie("DESC",ui->comboBox_trie_2->currentText()));
+        else      ui->le_tab_r->setModel(c.afficher());
+
+}
+
+void MainWindow::on_afficher_r_clicked()
+{
+    QChartView *chartView = D.stat_capacite();
+        chartView->show();
+}
+
+void MainWindow::on_pb_meilleur_r_2_clicked()
+{
+   D.imprimer(ui->rechercher_r_2->text());
+}
+
+/*void MainWindow::on_pb_meilleur_3_clicked()
+{
+ D.sendEmail();
+}
+*/
+void MainWindow::on_chat_r_clicked()
+{
+    DuarteCorporation::widget w;
+    w.exec();
+}
+
+//mailing
+void  MainWindow::on_browseBtn()
+{
+    files.clear();
+
+    QFileDialog dialog(this);
+    dialog.setDirectory(QDir::homePath());
+    dialog.setFileMode(QFileDialog::ExistingFiles);
+
+    if (dialog.exec())
+        files = dialog.selectedFiles();
+
+    QString fileListString;
+    foreach(QString file, files)
+        fileListString.append( "\"" + QFileInfo(file).fileName() + "\" " );
+
+    ui->file->setText( fileListString );
+
+}
+void   MainWindow::on_sendBtn()
+{
+    Smtp* smtp = new Smtp("imen.benatig@esprit.tn",ui->mail_pass->text(), "smtp.gmail.com");
+    connect(smtp, SIGNAL(status(QString)), this, SLOT(mailSent(QString)));
+
+    if( !files.isEmpty() )
+        smtp->sendMail("imen.benatig@esprit.tn", ui->rcpt->text() , ui->subject->text(),ui->msg->toPlainText(), files );
+    else
+        smtp->sendMail("imen.benatig@esprit.tn", ui->rcpt->text() , ui->subject->text(),ui->msg->toPlainText());
+}
+void   MainWindow::mailSent(QString status)
+{
+
+    if(status == "Message sent")
+        QMessageBox::warning( nullptr, tr( "Qt Simple SMTP client" ), tr( "Message sent!\n\n" ) );
+    ui->rcpt->clear();
+    ui->subject->clear();
+    ui->file->clear();
+    ui->msg->clear();
+    ui->mail_pass->clear();
+}
+
+
+void MainWindow::on_arduino_r_clicked()
+{ QString data=ui->rechercher_r_3->text();
+    qDebug() << data ;
+    QString nom=a.chercher(data);
+     qDebug() << nom ;
+     if(nom!=""){
+    QByteArray x=nom.toUtf8();
+    qDebug() << x ;
+    a.write_to_arduino(x);}else{
+         nom="empty";
+      a.write_to_arduino(nom.toUtf8())    ;}
+}
+
+///////SADOK////////////
+
+void MainWindow::on_bouton_supp_s_clicked()
+{
+    Dons Dd;
+    bool test = Dd.supprimer(ui->le_id_supp_s_2->text().toInt());
+    if (test)
+    {
+        QMessageBox::information(nullptr, QObject::tr("ok"),
+                                 QObject::tr("Suppression effectuee.\n"
+                                             "Click Cancel to exit."),
+                                 QMessageBox::Cancel);
+        ui->le_tab_s_2->setModel(Dtmp.afficher());
+    }
+    else
+        QMessageBox::critical(nullptr, QObject::tr("not ok"),
+                              QObject::tr("Suppression non effectuee.\n"
+                                          "Click Cancel to exit."),
+                              QMessageBox::Cancel);
+}
+
+void MainWindow::on_pushButton_modif_s_clicked()//mod
+{
+
+    int id_dons = ui->le_id_2_s_2->text().toInt();
+    QString nom = ui->le_nom_2_s_2->text();
+    int quantite = ui->le_quantit_2_s_2->text().toInt();
+    int montant = ui->le_montant_2_s_2->text().toInt();
+    Dons Dd(id_dons, nom, quantite,montant);
+
+    bool test = Dd.modifier(id_dons);
+    if (test)
+    {
+        QMessageBox::information(nullptr, QObject::tr("ok"),
+                                 QObject::tr("Modification effectuee.\n"
+                                             "Click Cancel to exit."),
+                                 QMessageBox::Cancel);
+        ui->le_tab_s_2->setModel(Dtmp.afficher());
+    }
+    else
+        QMessageBox::critical(nullptr, QObject::tr("not ok"),
+                              QObject::tr("Modification non effectuee.\n"
+                                          "Click Cancel to exit."),
+                              QMessageBox::Cancel);
+}
+
+void MainWindow::on_ajout_s_2_clicked()//ajout
+{
+    int id_dons = ui->le_id_ss->text().toInt();
+    QString nom = ui->le_nom_ss->text();
+    int quantite = ui->le_quantit_ss->text().toInt();
+    int montant = ui->le_montant_ss->text().toInt();
+    Dons Dd(id_dons, nom, quantite,montant);
+    bool test = Dd.ajouter();
+    if (test)
+    {
+        QMessageBox::information(nullptr, QObject::tr("ok"),
+                                 QObject::tr("Ajout effectue.\n"
+                                             "Click Cancel to exit."),
+                                 QMessageBox::Cancel);
+    }
+    else
+        QMessageBox::critical(nullptr, QObject::tr("not ok"),
+                              QObject::tr("Ajout non effectue.\n"
+                                          "Click Cancel to exit."),
+                              QMessageBox::Cancel);
+    ui->le_tab_s_2->setModel(Dtmp.afficher());
+}
+
+void MainWindow::on_button_video_clicked()
+{
+    setEnabled(false);
+    Video AM(this);
+    AM.show();
+    while (AM.isVisible())
+    {
+        qApp->processEvents();
+    }
+    setEnabled(true);
+}
+
+void MainWindow::on_qrcode_clicked()
+{
+    QMessageBox msg;
+    QItemSelectionModel *select = ui->le_tab_s_2->selectionModel();
+    if (!select->hasSelection()){
+        msg.setText("svp selectionner un choix ");
+
+        msg.setIcon(msg.Critical);
+        msg.exec();
+        return;
+    }
+    int tabeq=ui->le_tab_s_2->currentIndex().row();//selectionner dans la tab dons une  ligne
+    QVariant ID_MATERIEL=ui->le_tab_s_2->model()->data(ui->le_tab_s_2->model()->index(tabeq,0));//selectionne le id exactement
+    QString idd= ID_MATERIEL.toString();//convertir a une chaine
+    QSqlQuery qry;
+
+    qry.prepare("select * from DONS where ID=:idd");
+    qry.bindValue(":idd",idd);//prendre valeur id et mettre dans table materiel
+    qry.exec();
+    QString  id,nom,type,nombre,etat,prix,idc;
+
+    while(qry.next()){//prend des variable de la base de donnes
+        nom=qry.value(1).toString();
+        type=qry.value(2).toString();
+        nombre=qry.value(3).toString();
+    }
+    idc=QString(idd);
+    idc="ID:"+idd+"NOM:"+nom+"QUANTITE:"+type+"MONTANT:"+nombre;//pendre la chaine a code
+    qrcodegen::QrCode qr = qrcodegen::QrCode::encodeText(idc.toUtf8().constData(), qrcodegen::QrCode::Ecc::HIGH);
+
+    QImage im(qr.getSize(),qr.getSize(), QImage::Format_RGB888);
+    for (int y = 0; y < qr.getSize(); y++) {
+        for (int x = 0; x < qr.getSize(); x++) {
+            int color = qr.getModule(x, y);  // 0 for white, 1 for black
+
+            // You need to modify this part
+            if(color==0)
+                im.setPixel(x, y,qRgb(254, 254, 254));
+            else
+                im.setPixel(x, y,qRgb(0, 0, 0));
+        }
+    }
+    im=im.scaled(200,200);
+    ui->qrcode_3->setPixmap(QPixmap::fromImage(im));
+
+}
+
+
+void MainWindow::update_label()
+{
+    data=a.read_from_arduino();
+}
+
+
+void MainWindow::on_arduino_s_clicked()
+{
+    QMessageBox msg;
+    QItemSelectionModel *select = ui->le_tab_s_2->selectionModel();
+    if (!select->hasSelection()){
+        msg.setText("svp selectionner un choix ");
+
+        msg.setIcon(msg.Critical);
+        msg.exec();
+        return;
+    }
+    int tabeq=ui->le_tab_s_2->currentIndex().row();//selectionner dans la tab dons une  ligne
+    QVariant ID_MATERIEL=ui->le_tab_s_2->model()->data(ui->le_tab_s_2->model()->index(tabeq,0));//selectionne le id exactement
+    QString idd= ID_MATERIEL.toString();//convertir a une chaine
+    QSqlQuery qry;
+
+    qry.prepare("select QUANTITE from DONS where ID=:idd");
+    qry.bindValue(":idd",idd);//prendre valeur id et mettre dans table dons
+    qry.exec();
+    qry.next();
+    QByteArray quantite = qry.value(0).toByteArray();
+    qDebug()<< "quantite: "<<quantite;
+    a.write_to_arduino(quantite);
+}
+
+void MainWindow::on_retour_don_clicked(){close();}
+void MainWindow::on_retour_don_ajout_clicked(){ui->menu->setCurrentIndex(16);}
+void MainWindow::on_retour_don_affiche_clicked(){ui->menu->setCurrentIndex(16);}
+void MainWindow::on_retour_don_supp_clicked(){ui->menu->setCurrentIndex(16);}
+void MainWindow::on_retour_don_modif_clicked(){ui->menu->setCurrentIndex(16);}
+
+void MainWindow::on_ajouter_don_clicked(){ui->menu->setCurrentIndex(17);}
+void MainWindow::on_supp_don_clicked(){ui->menu->setCurrentIndex(19);}
+void MainWindow::on_rech_don_clicked(){ui->menu->setCurrentIndex(18);}
+void MainWindow::on_modifier_don_clicked(){ui->menu->setCurrentIndex(20);}

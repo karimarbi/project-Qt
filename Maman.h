@@ -8,7 +8,7 @@ class Maman
 {
 public:
     Maman();
-    Maman(QString,QString,int,int,int,QString);
+    Maman(QString nom,QString prenom,int idd,int age,int enfant,QString tel);
 
     QString getnom();
     QString getprenom();
@@ -26,18 +26,25 @@ public:
     void settel(QString);
 
 
-    bool ajouter();
-    QSqlQueryModel* afficher();
-    bool supprimer (int);
+     bool ajouter();
+     QSqlQueryModel* afficher();
+     bool supprimer (int);
      bool modifier(int);
      bool chercher(int);
+
+
      void notifications_ajouter();
      void notifications_supprimer();
      void notifications_modifier();
      void notifications_trouver();
      void notifications_donetri();
+     void notifications_arduino();
+
+
      QSqlQueryModel * trie();
      void statistique(QVector<double>* ticks,QVector<QString> *labels);
+     Maman find_arduino(int);
+
 private:
     QString nom , prenom ,tel;
  int IDD ,age, enfant;

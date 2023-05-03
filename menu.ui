@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Menu</class>
+ <widget class="QDialog" name="Menu">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>801</width>
+    <height>631</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <widget class="QPushButton" name="gestionDonnateur">
+   <property name="geometry">
+    <rect>
+     <x>480</x>
+     <y>340</y>
+     <width>231</width>
+     <height>91</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+background-color: rgb(237, 218, 204);
+	
+border: none;
+
+	font: italic 12pt &quot;Elephant&quot;;
+text-align: left;
+border: 1px solid #6a1616;
+}
+QPushButton:hover {
+	color: rgb(255, 255, 255);
+
+background:#6a1616;
+border: none;
+text-align: left;
+}
+
+</string>
+   </property>
+   <property name="text">
+    <string>Gestion des Donnateurs</string>
+   </property>
+  </widget>
+  <widget class="QFrame" name="frame">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>141</width>
+     <height>631</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#frame {
+	background:rgb(234, 210, 191);
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="gestionBene">
+   <property name="geometry">
+    <rect>
+     <x>160</x>
+     <y>170</y>
+     <width>231</width>
+     <height>91</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+background-color: rgb(237, 218, 204);
+	
+border: none;
+
+	font: italic 12pt &quot;Elephant&quot;;
+text-align: left;
+border: 1px solid #6a1616;
+}
+QPushButton:hover {
+	color: rgb(255, 255, 255);
+
+background:#6a1616;
+border: none;
+text-align: left;
+}
+
+</string>
+   </property>
+   <property name="text">
+    <string>  Gestion des benevoles</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="gestionMaman">
+   <property name="geometry">
+    <rect>
+     <x>160</x>
+     <y>340</y>
+     <width>231</width>
+     <height>91</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+background-color: rgb(237, 218, 204);
+	
+border: none;
+
+	font: italic 12pt &quot;Elephant&quot;;
+text-align: left;
+border: 1px solid #6a1616;
+}
+QPushButton:hover {
+	color: rgb(255, 255, 255);
+
+background:#6a1616;
+border: none;
+text-align: left;
+}
+
+</string>
+   </property>
+   <property name="text">
+    <string>Gestion des Mamans</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="gestionDon">
+   <property name="geometry">
+    <rect>
+     <x>480</x>
+     <y>170</y>
+     <width>231</width>
+     <height>91</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+background-color: rgb(237, 218, 204);
+	
+border: none;
+
+	font: italic 12pt &quot;Elephant&quot;;
+text-align: left;
+border: 1px solid #6a1616;
+}
+QPushButton:hover {
+	color: rgb(255, 255, 255);
+
+background:#6a1616;
+border: none;
+text-align: left;
+}
+
+</string>
+   </property>
+   <property name="text">
+    <string>      Gestion des dons</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="logout">
+   <property name="geometry">
+    <rect>
+     <x>680</x>
+     <y>480</y>
+     <width>91</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+background-color: rgb(237, 218, 204);
+	
+border: none;
+
+	font: italic 12pt &quot;Elephant&quot;;
+text-align: left;
+border: 1px solid #6a1616;
+}
+QPushButton:hover {
+	color: rgb(255, 255, 255);
+
+background:#6a1616;
+border: none;
+text-align: left;
+}
+
+</string>
+   </property>
+   <property name="text">
+    <string>   logout</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

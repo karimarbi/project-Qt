@@ -1,4 +1,4 @@
-#include "Maman.h"
+#include "maman.h"
 #include <QSqlQuery>
 #include <QtDebug>
 #include <QObject>
@@ -115,9 +115,10 @@ Maman::Maman()
 
     bool Maman::chercher(int IDD)
     {
+
         QSqlQuery query;
          QString IDD_string= QString::number(IDD);
-        query.exec("SELECT * FROM Maman WHERE IDD='"+IDD_string+"'");
+        query.exec("SELECT * FROM Maman WHERE IDD="+IDD_string+"");
 
 
         while (query.next()) {
@@ -190,6 +191,16 @@ Maman::Maman()
     }
 
 
+
+    void Maman::notifications_arduino()
+    {
+        QSystemTrayIcon *notifyIcon = new QSystemTrayIcon;
+
+        notifyIcon->show();
+        notifyIcon->showMessage("Gestion des Mamans ","données affichées",QSystemTrayIcon::Information,15000);
+
+    }
+
     void Maman::notifications_donetri()
     {
         QSystemTrayIcon *notifyIcon = new QSystemTrayIcon;
@@ -224,5 +235,20 @@ Maman::Maman()
 
             }
 
+        }
+
+    Maman Maman::find_arduino(int IDD)
+    {
+        QSqlQuery query;
+         QString IDD_string= QString::number(IDD);
+        query.exec("SELECT nom,prenom,IDD,age,enfant,tel FROM Maman WHERE IDD="+IDD_string+"");
+
+
+        while (query.next()) {
+            return  Maman(query.value(0).toString(),query.value(1).toString(),query.value(2).toInt(),query.value(3).toInt(),query.value(4).toInt(),query.value(5).toString()) ;
+
+        }
+        return Maman();
     }
+
 
